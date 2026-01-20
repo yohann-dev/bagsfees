@@ -18,32 +18,44 @@ app.use((req, res, next) => {
 });
 
 // Proxy for Bags API
-app.use('/api/bags', createProxyMiddleware({
+const bagsProxy = createProxyMiddleware({
   target: 'https://api2.bags.fm',
   changeOrigin: true,
   pathRewrite: { '^/api/bags': '/api/v1' },
-  onProxyReq: (proxyReq, req) => {
-    console.log('Proxying to Bags API:', req.url);
-  },
-  onError: (err, req, res) => {
-    console.error('Proxy error:', err);
-    res.status(500).json({ error: 'Proxy error' });
+  on: {
+    proxyReq: (proxyReq, req, res) => {
+      console.log('Proxying to Bags API:', req.method, req.url);
+    },
+    proxyRes: (proxyRes, req, res) => {
+      console.log('Bags API response:', proxyRes.statusCode);
+    },
+    error: (err, req, res) => {
+      console.error('Bags Proxy error:', err.message);
+      res.status(500).json({ error: 'Proxy error', message: err.message });
+    }
   }
-}));
+});
+app.use('/api/bags', bagsProxy);
 
 // Proxy for Public API
-app.use('/api/public', createProxyMiddleware({
+const publicProxy = createProxyMiddleware({
   target: 'https://public-api-v2.bags.fm',
   changeOrigin: true,
   pathRewrite: { '^/api/public': '/api/v1' },
-  onProxyReq: (proxyReq, req) => {
-    console.log('Proxying to Public API:', req.url);
-  },
-  onError: (err, req, res) => {
-    console.error('Proxy error:', err);
-    res.status(500).json({ error: 'Proxy error' });
+  on: {
+    proxyReq: (proxyReq, req, res) => {
+      console.log('Proxying to Public API:', req.method, req.url);
+    },
+    proxyRes: (proxyRes, req, res) => {
+      console.log('Public API response:', proxyRes.statusCode);
+    },
+    error: (err, req, res) => {
+      console.error('Public Proxy error:', err.message);
+      res.status(500).json({ error: 'Proxy error', message: err.message });
+    }
   }
-}));
+});
+app.use('/api/public', publicProxy);
 
 // Serve static files from the dist folder
 app.use(express.static(path.join(__dirname, 'dist')));
