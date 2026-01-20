@@ -1,8 +1,13 @@
 const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
 const PUBLIC_API_KEY = import.meta.env.VITE_PUBLIC_API_KEY;
 
+// Use proxy in dev, direct URLs in production
+const isDev = import.meta.env.DEV;
+const BAGS_API_BASE = isDev ? '/api/bags' : 'https://api2.bags.fm/api/v1';
+const PUBLIC_API_BASE = isDev ? '/api/public' : 'https://public-api-v2.bags.fm/api/v1';
+
 export async function fetchTopTokens() {
-  const response = await fetch('/api/bags/token-launch/top-tokens/lifetime-fees', {
+  const response = await fetch(`${BAGS_API_BASE}/token-launch/top-tokens/lifetime-fees`, {
     headers: {
       'Authorization': `Bearer ${AUTH_TOKEN}`,
       'Accept': 'application/json',
@@ -23,7 +28,7 @@ export async function fetchTopTokens() {
 }
 
 export async function fetchClaimStats(tokenMint) {
-  const response = await fetch(`/api/public/token-launch/claim-stats?tokenMint=${tokenMint}`, {
+  const response = await fetch(`${PUBLIC_API_BASE}/token-launch/claim-stats?tokenMint=${tokenMint}`, {
     headers: {
       'x-api-key': PUBLIC_API_KEY,
       'Accept': 'application/json',
