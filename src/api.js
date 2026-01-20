@@ -1,6 +1,5 @@
 const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
 const PUBLIC_API_KEY = import.meta.env.VITE_PUBLIC_API_KEY;
-console.log(AUTH_TOKEN, PUBLIC_API_KEY);
 
 export async function fetchTopTokens() {
   const response = await fetch('/api/bags/token-launch/top-tokens/lifetime-fees', {
