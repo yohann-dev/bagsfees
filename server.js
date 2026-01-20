@@ -11,6 +11,12 @@ console.log('Starting server...');
 console.log('__dirname:', __dirname);
 console.log('PORT:', PORT);
 
+// Log all requests
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // Proxy for Bags API
 app.use('/api/bags', createProxyMiddleware({
   target: 'https://api2.bags.fm',
