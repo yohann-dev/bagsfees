@@ -23,14 +23,14 @@ app.use((req, res, next) => {
 
 // Proxy for Bags API
 const bagsProxy = createProxyMiddleware({
-  target: 'https://api2.bags.fm',
+  target: 'https://api2.bags.fm/api/v1',
   changeOrigin: true,
-  pathRewrite: { '^/api/bags': '/api/v1' },
+  pathRewrite: { '^/api/bags': '' },
   on: {
     proxyReq: (proxyReq, req, res) => {
       // Add auth header
       proxyReq.setHeader('Authorization', `Bearer ${AUTH_TOKEN}`);
-      console.log('Proxying to Bags API:', req.method, proxyReq.path);
+      console.log('Proxying to Bags API:', req.method, 'https://api2.bags.fm/api/v1' + proxyReq.path);
     },
     proxyRes: (proxyRes, req, res) => {
       console.log('Bags API response:', proxyRes.statusCode);
@@ -45,14 +45,14 @@ app.use('/api/bags', bagsProxy);
 
 // Proxy for Public API
 const publicProxy = createProxyMiddleware({
-  target: 'https://public-api-v2.bags.fm',
+  target: 'https://public-api-v2.bags.fm/api/v1',
   changeOrigin: true,
-  pathRewrite: { '^/api/public': '/api/v1' },
+  pathRewrite: { '^/api/public': '' },
   on: {
     proxyReq: (proxyReq, req, res) => {
       // Add API key header
       proxyReq.setHeader('x-api-key', PUBLIC_API_KEY);
-      console.log('Proxying to Public API:', req.method, proxyReq.path);
+      console.log('Proxying to Public API:', req.method, 'https://public-api-v2.bags.fm/api/v1' + proxyReq.path);
     },
     proxyRes: (proxyRes, req, res) => {
       console.log('Public API response:', proxyRes.statusCode);
